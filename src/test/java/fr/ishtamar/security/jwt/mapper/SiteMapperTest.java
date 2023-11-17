@@ -17,7 +17,7 @@ public class SiteMapperTest {
     @Test
     public void testTrucToDto() {
         UserInfo user= new UserInfo(106L,"TheOldMan","106@scp.com","123456","ROLE_USER");
-        Site site = new Site(1L,"mockSite",user);
+        Site site = new Site(1L,"mockSite",user,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         SiteDto siteDto = siteMapper.toDto(site);
 
         assertThat(siteDto.getName()).isEqualTo("mockSite");

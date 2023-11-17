@@ -19,10 +19,15 @@ public class Site {
     private Long id;
 
     @NotNull
+    @Column(unique = true)
     @Size(max=120)
     private String name;
 
     @ManyToOne
     @JoinColumn(name="owner_id",referencedColumnName = "id")
     private UserInfo owner;
+
+    @NotNull
+    @Size(min=64,max=64)
+    private String secret;
 }
