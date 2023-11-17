@@ -1,7 +1,7 @@
 package fr.ishtamar.security.jwt.mapper;
 
-import fr.ishtamar.security.jwt.dto.TrucDto;
-import fr.ishtamar.security.jwt.entity.Truc;
+import fr.ishtamar.security.jwt.dto.SiteDto;
+import fr.ishtamar.security.jwt.entity.Site;
 import fr.ishtamar.security.jwt.service.UserInfoService;
 import fr.ishtamar.security.jwt.service.impl.UserInfoServiceImpl;
 import org.mapstruct.Mapper;
@@ -12,18 +12,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = "Spring")
-public abstract class TrucMapper implements EntityMapper<TrucDto, Truc> {
+public abstract class SiteMapper implements EntityMapper<SiteDto, Site> {
 
     @Autowired
     UserInfoService userInfoService=new UserInfoServiceImpl();
 
     @Mappings({
-            @Mapping(target="user", expression="java(this.userInfoService.getUserById(trucDto.getUser_id()))")
+            @Mapping(target="owner", expression="java(this.userInfoService.getUserById(siteDto.getOwner_id()))")
     })
-    public abstract Truc toEntity(TrucDto trucDto);
+    public abstract Site toEntity(SiteDto siteDto);
 
     @Mappings({
-            @Mapping(source= "truc.user.id",target="user_id")
+            @Mapping(source= "site.owner.id",target="owner_id")
     })
-    public abstract TrucDto toDto(Truc truc);
+    public abstract SiteDto toDto(Site site);
 }

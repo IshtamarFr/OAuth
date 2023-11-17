@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    private UserInfoService service=new UserInfoServiceImpl();
+    private final UserInfoService service=new UserInfoServiceImpl();
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -42,28 +42,16 @@ public class UserController {
             @ApiResponse(responseCode="200", description = "User successfully created"),
             @ApiResponse(responseCode="400", description = "User already exists")
     })
-    @PostMapping("/addNewUser")
+    @PostMapping("/register")
     public String addNewUser(@RequestBody UserInfo userInfo) {
         return service.addUser(userInfo);
-    }
-
-    @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
-    }
-
-    @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
     }
 
     @Operation(summary = "generate new JWT",responses={
             @ApiResponse(responseCode="200", description = "Token successfully created"),
             @ApiResponse(responseCode="403", description = "Access unauthorized")
     })
-    @PostMapping("/generateToken")
+    @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
@@ -73,22 +61,12 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "renew JWT for valid user",responses={
-            @ApiResponse(responseCode="200", description = "User successfully created")
-    })
-    @PostMapping("/renewToken")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER','ROLE_ADMIN')")
-    public String authenticateAndRenewToken(@RequestHeader(value="Authorization",required = false) String jwt) {
-        String username = jwtService.extractUsername(jwt.substring(7));
-        return jwtService.generateToken(username);
-    }
-
     @Operation(summary = "gets personal data from user by id",responses={
             @ApiResponse(responseCode="200", description = "Personal data is displayed"),
             @ApiResponse(responseCode="403", description = "Access unauthorized")
     })
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public UserDto getUserById(@PathVariable("id") final long id) throws EntityNotFoundException {
         return userMapper.toDto(service.getUserById(id));
     }
